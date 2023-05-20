@@ -22,7 +22,7 @@ public class OrdersController {
     private OrdersServiceImpl ordersService;
 
     @PostMapping("/add")
-    public ResponseEntity<Orders> addProduct(@RequestBody OrdersDto ordersDto) {
+    public ResponseEntity<Orders> addOrder(@RequestBody OrdersDto ordersDto) {
         return new ResponseEntity<>(ordersService.save(ordersDto), HttpStatus.CREATED);
     }
 
