@@ -16,11 +16,19 @@ import java.util.Map;
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleCityNotFoundException() {
+    public ResponseEntity<Object> handleUniqueColumnException() {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Element cannot be processed");
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Object> handleProductNotFoundException() {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Product cannot found");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
 }
