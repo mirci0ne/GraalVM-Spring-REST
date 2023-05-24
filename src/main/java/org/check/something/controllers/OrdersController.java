@@ -1,6 +1,5 @@
 package org.check.something.controllers;
 
-import lombok.extern.log4j.Log4j2;
 import org.check.something.dtos.OrdersDto;
 import org.check.something.entities.Orders;
 import org.check.something.entities.Product;
@@ -15,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/orders")
-@Log4j2
 public class OrdersController {
 
     @Autowired
