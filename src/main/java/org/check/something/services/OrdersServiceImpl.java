@@ -6,7 +6,7 @@ import org.check.something.dtos.OrdersDto;
 import org.check.something.entities.Clients;
 import org.check.something.entities.Orders;
 import org.check.something.entities.Product;
-import org.check.something.exceptions.ProductNotFoundException;
+import org.check.something.exceptions.ItemNotFoundException;
 import org.check.something.mappers.ClientsMapper;
 import org.check.something.mappers.OrdersMapper;
 import org.check.something.repository.ClientsRepository;
@@ -15,7 +15,9 @@ import org.check.something.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class OrdersServiceImpl {
     public Orders save(OrdersDto ordersDto) {
         log.info("Saving order");
         Product product = productRepository.getIdByProductName(ordersDto.getOrderProduct());
-        Optional.ofNullable(product).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        Optional.ofNullable(product).orElseThrow(() -> new ItemNotFoundException("Product not found"));
         product.setStock(product.getStock() - ordersDto.getAmount());
         productRepository.save(product);
         Clients clientsDto = ClientsMapper.MAPPER.ordersToClients(ordersDto);
@@ -38,9 +40,13 @@ public class OrdersServiceImpl {
         return ordersRepository.save(orders);
     }
 
-    public Optional<Orders> getOrder(Long id) {
+    public List<Orders> getOrder(Long id) {
         log.info("Returning order for id: {}", id);
-        return ordersRepository.findById(id);
+        Optional<Orders> listOfOrders = ordersRepository.findById(id);
+        return Optional.of(listOfOrders.stream().map(fooId -> listOfOrders.get())
+                        .filter(Objects::nonNull).collect(Collectors.toList()))
+                .filter(a -> !a.isEmpty())
+                .orElseThrow(() -> new ItemNotFoundException("Order not found"));
     }
 
     public List<Orders> getOrders() {

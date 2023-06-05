@@ -1,6 +1,7 @@
 package org.check.something.controllers;
 
 import org.check.something.entities.Product;
+import org.check.something.exceptions.ItemNotFoundException;
 import org.check.something.services.ProductsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class ProductsController {
 
     @GetMapping("/{id}")
     public Optional<Product> getProduct(@PathVariable Long id) {
-        return productsService.getProduct(id);
+        return Optional.ofNullable(productsService.getProduct(id).orElseThrow(() -> new ItemNotFoundException("Product not found")));
     }
 
     @GetMapping("/all")
