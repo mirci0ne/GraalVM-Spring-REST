@@ -60,4 +60,13 @@ public class OrdersServiceImpl {
         ordersRepository.deleteById(id);
     }
 
+    public Orders updateOrder(Long id, OrdersDto ordersDto) {
+        log.info("Updating order for id: {}", id);
+        Product product = productRepository.getIdByProductName(ordersDto.getOrderProduct());
+        Optional.ofNullable(product).orElseThrow(() -> new ItemNotFoundException("Product not found"));
+        Orders orders = OrdersMapper.MAPPER.ordersDtoToOrders(ordersDto);
+        orders.setId(id);
+        return ordersRepository.save(orders);
+    }
+
 }
