@@ -2,7 +2,9 @@ package org.check.something.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.check.something.dtos.OrdersDto;
 import org.check.something.entities.Orders;
+import org.check.something.mappers.OrdersMapper;
 import org.check.something.services.OrdersServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +38,7 @@ class OrdersControllerTest {
     OrdersController ordersController;
 
     private MockMvc mockMvc;
-    private final Orders orders = new Orders();
+    private Orders orders = new Orders();
 
 
     @BeforeEach
@@ -108,5 +110,25 @@ class OrdersControllerTest {
 
         mockMvc.perform(delete("/api/v1/orders/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @SneakyThrows
+    public void updateOrder() {
+        OrdersDto ordersDto = new OrdersDto();
+        ordersDto.setOrderDate(Date.valueOf("2025-02-01"));
+        ordersDto.setOrderProduct("Tomato edited");
+        ordersDto.setAmount(300);
+        ordersDto.setClientFirstName("Jane");
+        ordersDto.setClientLastName("Doe");
+        orders = OrdersMapper.MAPPER.ordersDtoToOrders(ordersDto);
+        orders.setId(1L);
+        when(ordersService.updateOrder(1L, ordersDto))
+                .thenReturn(orders);
+
+        mockMvc.perform(put("/api/v1/orders/1")
+                        .content(om.writeValueAsString(ordersDto))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isAccepted());
     }
 }
