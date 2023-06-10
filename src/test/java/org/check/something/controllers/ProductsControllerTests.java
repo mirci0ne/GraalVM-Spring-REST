@@ -1,8 +1,7 @@
-package org.check.something;
+package org.check.something.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.check.something.controllers.ProductsController;
 import org.check.something.entities.Product;
 import org.check.something.services.ProductsServiceImpl;
 import org.hamcrest.Matchers;
